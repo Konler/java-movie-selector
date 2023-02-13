@@ -128,10 +128,7 @@ class FilmorateApplicationTests {
         assertEquals("Дата рождения не может быть в будущем", ex.getMessage());
     }
 
-    @Test
-    void shouldReturFilm(){
 
-    }
 
 
 
