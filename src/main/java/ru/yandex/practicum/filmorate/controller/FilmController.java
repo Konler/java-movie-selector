@@ -25,50 +25,51 @@ public class FilmController {
     public Film createFilm(@RequestBody Film film) throws ValidationException {
         if (validate(film)) {
             film.setId(filmId++);
-            films.put(film.getId(),film);
-            log.info("Получен запрос Post.Добавлен фильм c id ={}",film.getId());
-        }else {
+            films.put(film.getId(), film);
+            log.info("Получен запрос Post.Добавлен фильм c id ={}", film.getId());
+        } else {
             throw new ValidationException("Ошибка валидации фильма");
         }
-            return film;
-        }
+        return film;
+    }
 
-        @PutMapping
-        public Film updateFilm (@RequestBody Film film) throws ValidationException {
-            if (validate(film)) {
-                if (films.containsKey(film.getId())){
-                    films.put(film.getId(),film);
-                    log.info("Получен запрос Put.Обновлен фильм c id ={}",film.getId());
-                }else {
-                    throw new ValidationException("Нет такого фильма");
-                }
-            }else {
-                throw new ValidationException("Ошибка валидации фильма");
+    @PutMapping
+    public Film updateFilm(@RequestBody Film film) throws ValidationException {
+        if (validate(film)) {
+            if (films.containsKey(film.getId())) {
+                films.put(film.getId(), film);
+                log.info("Получен запрос Put.Обновлен фильм c id ={}", film.getId());
+            } else {
+                throw new ValidationException("Нет такого фильма");
             }
-            return film;
+        } else {
+            throw new ValidationException("Ошибка валидации фильма");
         }
+        return film;
+    }
 
-        @GetMapping()
-        public List<Film> getdAllFilms() {
-            log.info("Получен запрос Get");
-            return new ArrayList<Film>(films.values());
-        }
-        private boolean validate(Film film)  {
-        boolean validation=true;
-            if (film.getName().isBlank()) {
-                return false;
-            }else if (film.getDescription().length() > MAX_DESCRIPTION_LENGTH) {
-                validation=false;
-                return validation;
-            }else if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-                validation = false;
-                return validation;
-            }else if (film.getDuration()<0) {
-                validation = false;
-                return validation;
-            }
-            validation=true;
+    @GetMapping()
+    public List<Film> getdAllFilms() {
+        log.info("Получен запрос Get");
+        return new ArrayList<Film>(films.values());
+    }
+
+    private boolean validate(Film film) {
+        boolean validation = true;
+        if (film.getName().isBlank()) {
+            return false;
+        } else if (film.getDescription().length() > MAX_DESCRIPTION_LENGTH) {
+            validation = false;
+            return validation;
+        } else if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+            validation = false;
+            return validation;
+        } else if (film.getDuration() < 0) {
+            validation = false;
             return validation;
         }
-
+        validation = true;
+        return validation;
     }
+
+}

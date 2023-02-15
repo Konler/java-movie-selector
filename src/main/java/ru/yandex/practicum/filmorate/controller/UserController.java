@@ -17,16 +17,17 @@ public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private final HashMap<Integer, User> users = new HashMap<>();
     private Integer userId = 1;
+
     @PutMapping
     public User updateUser(@RequestBody User user) throws ValidationException {
-        if (valedate(user)){
-            if (users.containsKey(user.getId())){
-                users.put(user.getId(),user);
-                log.info("Получен запрос Put.Обновлен пользователь с id ={}",user.getId());
-            }else {
+        if (valedate(user)) {
+            if (users.containsKey(user.getId())) {
+                users.put(user.getId(), user);
+                log.info("Получен запрос Put.Обновлен пользователь с id ={}", user.getId());
+            } else {
                 throw new ValidationException("Нет такого пользователя");
             }
-        }else {
+        } else {
             throw new ValidationException("Ошибка валидации пользователя");
         }
 
@@ -38,13 +39,12 @@ public class UserController {
         if (valedate(user)) {
             user.setId(userId++);
             users.put(user.getId(), user);
-            log.info("Получен запрос Post. Добавлен пользователь с id ={}",user.getId());
+            log.info("Получен запрос Post. Добавлен пользователь с id ={}", user.getId());
         } else {
             throw new ValidationException("Ошибка валидации пользователя");
         }
         return user;
     }
-
 
 
     @GetMapping
@@ -66,8 +66,8 @@ public class UserController {
         } else if (user.getLogin().isBlank() || user.getLogin().contains(" ") || user.getLogin() == null) {
             validation = false;
             return validation;
-        } else if (user.getName()==null|| user.getName().isEmpty()||user.getName().isBlank()) {
-           user.setName(user.getLogin());
+        } else if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
+            user.setName(user.getLogin());
             if (user.getBirthday().isAfter(LocalDate.now())) {
                 validation = false;
                 return validation;
