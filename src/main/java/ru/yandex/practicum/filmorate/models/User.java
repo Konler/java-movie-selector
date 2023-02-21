@@ -1,10 +1,8 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.models;
 
 import lombok.*;
 import org.springframework.lang.NonNull;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Data

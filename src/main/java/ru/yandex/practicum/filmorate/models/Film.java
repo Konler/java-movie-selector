@@ -1,13 +1,9 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.models;
 
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Data
 public class Film {

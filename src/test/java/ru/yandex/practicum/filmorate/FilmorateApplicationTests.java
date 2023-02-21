@@ -1,20 +1,9 @@
 package ru.yandex.practicum.filmorate;
 
-import org.junit.jupiter.api.Assertions;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
 
 @SpringBootTest
 class FilmorateApplicationTests {
