@@ -23,7 +23,6 @@ class UserControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-
     @Test
     public void addUserWithIncorrectEmail() throws Exception {
         User user = User.builder()
