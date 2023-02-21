@@ -22,13 +22,13 @@ public class UserController extends AbstractController<User> {
 
     @PostMapping
     @Override
-    public User objectAdd(@Valid @RequestBody User user) throws ValidationException {
+    public User objectAdd(@Valid @RequestBody User user) {
         return super.objectAdd(user);
     }
 
     @PutMapping
     @Override
-    public User objectRenewal(@Valid @RequestBody User user) throws ValidationException {
+    public User objectRenewal(@Valid @RequestBody User user) {
 
         return super.objectRenewal(user);
     }

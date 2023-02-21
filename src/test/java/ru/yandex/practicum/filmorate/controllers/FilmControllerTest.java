@@ -24,7 +24,7 @@ class FilmControllerTest {
     FilmController filmController;
     @BeforeEach
     void seiUp() {
-        filmController = new FilmController();
+         filmController = new FilmController();
     }
 
     @Autowired
