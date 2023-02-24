@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class User extends Object {
 
-    @Positive(message=AnnotationMessages.INCORRECT_ID)
+    @Positive(message = AnnotationMessages.INCORRECT_ID)
     private int id;
     @Email(message = AnnotationMessages.INCORRECT_EMAIL)
     @NotBlank(message = AnnotationMessages.EMPTY_EMAIL)

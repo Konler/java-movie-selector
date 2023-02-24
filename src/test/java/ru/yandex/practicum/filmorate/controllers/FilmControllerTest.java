@@ -22,9 +22,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class FilmControllerTest {
     FilmController filmController;
+
     @BeforeEach
     void seiUp() {
-         filmController = new FilmController();
+        filmController = new FilmController();
     }
 
     @Autowired
@@ -88,7 +89,7 @@ class FilmControllerTest {
                 .releaseDate(LocalDate.of(1894, 6, 30))
                 .duration(60)
                 .build();
-        assertThrows(ValidationException.class, () -> filmController.add(film),"Некорректная дата релиза!");
+        assertThrows(ValidationException.class, () -> filmController.add(film), "Некорректная дата релиза!");
     }
 
     @Test

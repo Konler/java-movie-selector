@@ -31,7 +31,7 @@ class UserControllerTest {
                 .email("incorrect?.email.@")
                 .login("Name1234")
                 .name("Name")
-                .birthday(LocalDate.of(1994,6,19))
+                .birthday(LocalDate.of(1994, 6, 19))
                 .build();
         mockMvc.perform(
                         post("/users")
@@ -42,11 +42,11 @@ class UserControllerTest {
     }
 
     @Test
-    public void addUserWithEmptyEmail () throws Exception {
+    public void addUserWithEmptyEmail() throws Exception {
         User user = User.builder()
                 .login("Name1234")
                 .name("Name")
-                .birthday(LocalDate.of(1994,6,19))
+                .birthday(LocalDate.of(1994, 6, 19))
                 .build();
         mockMvc.perform(
                         post("/users")
@@ -61,7 +61,7 @@ class UserControllerTest {
         User user = User.builder()
                 .email("name@email.com")
                 .name("Name")
-                .birthday(LocalDate.of(1994,6,19))
+                .birthday(LocalDate.of(1994, 6, 19))
                 .build();
         mockMvc.perform(
                         post("/users")
@@ -77,7 +77,7 @@ class UserControllerTest {
                 .email("name@email.com")
                 .login("Name1234")
                 .name("Name")
-                .birthday(LocalDate.of(2100,6,19))
+                .birthday(LocalDate.of(2100, 6, 19))
                 .build();
         mockMvc.perform(
                         post("/users")
@@ -94,7 +94,7 @@ class UserControllerTest {
                 .email("name@email.com")
                 .login("Name1234")
                 .name("Name")
-                .birthday(LocalDate.of(1994,6,19))
+                .birthday(LocalDate.of(1994, 6, 19))
                 .build();
         mockMvc.perform(
                         post("/users")
@@ -113,7 +113,7 @@ class UserControllerTest {
                 .email("name@email.com")
                 .login("Name1234")
                 .name("Name")
-                .birthday(LocalDate.of(1994,6,19))
+                .birthday(LocalDate.of(1994, 6, 19))
                 .build();
         mockMvc.perform(
                         post("/users")
@@ -126,7 +126,7 @@ class UserControllerTest {
                 .email("name2@email.com")
                 .login(user.getLogin())
                 .name("Name2")
-                .birthday(LocalDate.of(1994,6,20))
+                .birthday(LocalDate.of(1994, 6, 20))
                 .build();
         mockMvc.perform(put("/users").content(objectMapper.writeValueAsString(user2))
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())

@@ -38,7 +38,7 @@ public class UserController extends AbstractController<User> {
             throw new ObjectAlreadyExistException(LogMessages.ALREADY_EXIST.toString());
         }
         user.setId(generateId());
-        users.put(user.getId(),user);
+        users.put(user.getId(), user);
         log.info(LogMessages.OBJECT_ADD.toString(), user);
         return user;
     }
@@ -50,7 +50,7 @@ public class UserController extends AbstractController<User> {
         validate(user);
         if (users.get(user.getId()) != null) {
             users.replace(user.getId(), user);
-            log.info(LogMessages.OBJECT_UPDATE.toString(),user);
+            log.info(LogMessages.OBJECT_UPDATE.toString(), user);
         } else {
             log.info(LogMessages.OBJECT_NOT_FOUND.toString(), user);
             throw new ObjectNotFoundException(LogMessages.OBJECT_NOT_FOUND.toString());
