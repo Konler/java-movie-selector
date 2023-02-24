@@ -88,7 +88,7 @@ class FilmControllerTest {
                 .releaseDate(LocalDate.of(1894, 6, 30))
                 .duration(60)
                 .build();
-        assertThrows(ValidationException.class, () -> filmController.objectAdd(film),"Некорректная дата релиза!");
+        assertThrows(ValidationException.class, () -> filmController.add(film),"Некорректная дата релиза!");
     }
 
     @Test
@@ -109,6 +109,7 @@ class FilmControllerTest {
     @Test
     public void addFilmWithCorrectData() throws Exception {
         Film film = Film.builder()
+                .id(100)
                 .name("Titanic")
                 .description("Film description")
                 .releaseDate(LocalDate.of(2012, 6, 30))
@@ -127,6 +128,7 @@ class FilmControllerTest {
     @Test
     public void addAndUpdateFilmWithCorrectData() throws Exception {
         Film film = Film.builder()
+                .id(1)
                 .name("Titanic")
                 .description("Film description")
                 .releaseDate(LocalDate.of(2012, 6, 30))

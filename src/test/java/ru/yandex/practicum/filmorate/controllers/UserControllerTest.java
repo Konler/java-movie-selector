@@ -90,6 +90,7 @@ class UserControllerTest {
     @Test
     public void addUserWithCorrectData() throws Exception {
         User user = User.builder()
+                .id(100)
                 .email("name@email.com")
                 .login("Name1234")
                 .name("Name")
@@ -108,6 +109,7 @@ class UserControllerTest {
     @Test
     public void addAndUpdateUserWithCorrectData() throws Exception {
         User user = User.builder()
+                .id(1)
                 .email("name@email.com")
                 .login("Name1234")
                 .name("Name")
