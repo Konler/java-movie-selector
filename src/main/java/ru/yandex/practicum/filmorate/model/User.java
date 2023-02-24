@@ -10,8 +10,6 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 public class User extends Object {
-
-    @Positive(message = AnnotationMessages.INCORRECT_ID)
     private int id;
     @Email(message = AnnotationMessages.INCORRECT_EMAIL)
     @NotBlank(message = AnnotationMessages.EMPTY_EMAIL)

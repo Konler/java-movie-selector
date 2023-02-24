@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 public class Film {
-    @Positive(message = AnnotationMessages.INCORRECT_ID)
+
     private int id;
     @NotBlank(message = AnnotationMessages.EMPTY_NAME)
     private String name;
