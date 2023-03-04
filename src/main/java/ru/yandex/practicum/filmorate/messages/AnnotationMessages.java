@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.messages;
 
 public interface AnnotationMessages {
+    String INCORRECT_ID = "Id должен быть положительное число";
     String EMPTY_EMAIL = "email не может быть пустым";
     String INCORRECT_EMAIL = "Некорректный email";
     String INCORRECT_LOGIN = "login не должен содержать пробелы";
