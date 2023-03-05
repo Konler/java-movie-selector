@@ -1,68 +1,80 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.ObjectAlreadyExistException;
-import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.messages.LogMessages;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.sevice.UserService;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("/users")
-public class UserController extends AbstractController<User> {
-    private int id = 1;
-    private final Map<Integer, User> users = new HashMap<>();
+public class UserController {
+    private final UserService userService;
 
-    private int generateId() {
-        return id++;
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
-    @Override
-    public List<User> getAll() {
-        log.info(LogMessages.TOTAL.toString(), users.size());
-        return new ArrayList<>(users.values());
+    public List<User> getAllUsers() {
+        log.info(LogMessages.GET_ALL_USERS_REQUEST.toString());
+        return userService.getAll();
+    }
+
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable long id) {
+        log.info(LogMessages.GET_FRIEND_BY_ID_REQUEST.toString(), id);
+        return userService.findUser(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUserById(@PathVariable long id) {
+        log.info(LogMessages.DELETE_USER_BY_ID_REQUEST.toString(), id);
+        userService.deleteUserById(id);
     }
 
     @PostMapping
-    @Override
-    public User add(@Valid @RequestBody User user) {
-        validate(user);
-        if (users.containsKey(user.getId())) {
-            log.info(LogMessages.ALREADY_EXIST.toString(), user);
-            throw new ObjectAlreadyExistException(LogMessages.ALREADY_EXIST.toString());
-        }
-        user.setId(generateId());
-        users.put(user.getId(), user);
-        log.info(LogMessages.OBJECT_ADD.toString(), user);
+    public User addUser(@Valid @RequestBody User user) throws ValidationException {
+        log.info(LogMessages.ADD_USER_REQUEST.toString(), user);
+        userService.addUser(user);
         return user;
     }
 
     @PutMapping
-    @Override
-    public User update(@Valid @RequestBody User user) {
-
-        validate(user);
-        if (users.get(user.getId()) != null) {
-            users.replace(user.getId(), user);
-            log.info(LogMessages.OBJECT_UPDATE.toString(), user);
-        } else {
-            log.info(LogMessages.OBJECT_NOT_FOUND.toString(), user);
-            throw new ObjectNotFoundException(LogMessages.OBJECT_NOT_FOUND.toString());
-        }
+    public User userRenewal(@Valid @RequestBody User user) throws ValidationException {
+        log.info(LogMessages.RENEWAL_USER_REQUEST.toString(), user);
+        userService.updateUser(user);
         return user;
     }
 
-    public User validate(User user) throws ValidationException {
-        if (user.getName() == null || user.getName().isBlank()) {
-            log.warn(LogMessages.EMPTY_USER_NAME.toString());
-            user.setName(user.getLogin());
-        }
-        return user;
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable long id, @PathVariable long friendId) {
+        log.info(LogMessages.ADD_FRIEND_REQUEST.toString(), id, friendId);
+        userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void removeFriend(@PathVariable long id, @PathVariable long friendId) {
+        log.info(LogMessages.REMOVE_FRIEND_REQUEST.toString(), id, friendId);
+        userService.removeFriend(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public List<User> getFriends(@PathVariable long id) {
+        log.info(LogMessages.GET_FRIENDS_REQUEST.toString());
+        return userService.getFriends(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable long id, @PathVariable long otherId) {
+        log.info(LogMessages.GET_COMMON_FRIENDS_REQUEST.toString());
+        return userService.getCommonFriends(id, otherId);
     }
 }

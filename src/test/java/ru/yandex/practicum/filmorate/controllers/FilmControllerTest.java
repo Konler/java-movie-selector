@@ -23,10 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class FilmControllerTest {
     FilmController filmController;
 
-    @BeforeEach
-    void seiUp() {
-        filmController = new FilmController();
-    }
 
     @Autowired
     private MockMvc mockMvc;
@@ -82,14 +78,19 @@ class FilmControllerTest {
     }
 
     @Test
-    public void addFilmWithIncorrectReleaseData() {
+    public void addFilmWithIncorrectReleaseData() throws Exception {
         Film film = Film.builder()
                 .name("Titanic")
                 .description("Film description")
                 .releaseDate(LocalDate.of(1894, 6, 30))
                 .duration(60)
                 .build();
-        assertThrows(ValidationException.class, () -> filmController.add(film), "Некорректная дата релиза!");
+        mockMvc.perform(
+                        post("/films")
+                                .content(objectMapper.writeValueAsString(film))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ValidationException));
     }
 
     @Test
