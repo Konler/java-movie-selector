@@ -88,7 +88,7 @@ class UserControllerTest {
     @Test
     public void addUserWithCorrectData() throws Exception {
         User user = User.builder()
-                .id(100)
+                .id(100L)
                 .email("name@email.com")
                 .login("Name1234")
                 .name("Name")
@@ -107,7 +107,7 @@ class UserControllerTest {
     @Test
     public void addAndUpdateUserWithCorrectData() throws Exception {
         User user = User.builder()
-                .id(1)
+                .id(1L)
                 .email("name@email.com")
                 .login("Name1234")
                 .name("Name")
@@ -120,7 +120,7 @@ class UserControllerTest {
                 )
                 .andExpect(status().isOk());
         User user2 = User.builder()
-                .id(1)
+                .id(1L)
                 .email("name2@email.com")
                 .login(user.getLogin())
                 .name("Name2")
