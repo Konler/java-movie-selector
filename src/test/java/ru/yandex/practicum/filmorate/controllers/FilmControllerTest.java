@@ -111,7 +111,7 @@ class FilmControllerTest {
     @Test
     public void addFilmWithCorrectData() throws Exception {
         Film film = Film.builder()
-                .id(100)
+                .id(100L)
                 .name("Titanic")
                 .description("Film description")
                 .releaseDate(LocalDate.of(2012, 6, 30))
@@ -130,7 +130,7 @@ class FilmControllerTest {
     @Test
     public void addAndUpdateFilmWithCorrectData() throws Exception {
         Film film = Film.builder()
-                .id(1)
+                .id(1L)
                 .name("Titanic")
                 .description("Film description")
                 .releaseDate(LocalDate.of(2012, 6, 30))
@@ -143,7 +143,7 @@ class FilmControllerTest {
                 )
                 .andExpect(status().isOk());
         Film film2 = Film.builder()
-                .id(1)
+                .id(1L)
                 .name("HomeAlone")
                 .description("HomeAlone description")
                 .releaseDate(LocalDate.of(2012, 6, 30))
