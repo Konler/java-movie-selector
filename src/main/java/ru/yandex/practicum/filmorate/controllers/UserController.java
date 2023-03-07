@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.messages.LogMessages;
 import ru.yandex.practicum.filmorate.model.User;
@@ -41,27 +42,27 @@ public class UserController {
     }
 
     @PostMapping
-    public User addUser(@Valid @RequestBody User user) throws ValidationException {
+    public User addUser(@Valid @RequestBody User user) throws ValidationException, UserNotFoundException {
         log.info(LogMessages.ADD_USER_REQUEST.toString(), user);
         userService.addUser(user);
         return user;
     }
 
     @PutMapping
-    public User userRenewal(@Valid @RequestBody User user) throws ValidationException {
+    public User userRenewal(@Valid @RequestBody User user) throws ValidationException, UserNotFoundException {
         log.info(LogMessages.RENEWAL_USER_REQUEST.toString(), user);
         userService.updateUser(user);
         return user;
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public void addFriend(@PathVariable long id, @PathVariable long friendId) {
+    public void addFriend(@PathVariable long id, @PathVariable long friendId) throws UserNotFoundException {
         log.info(LogMessages.ADD_FRIEND_REQUEST.toString(), id, friendId);
         userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public void removeFriend(@PathVariable long id, @PathVariable long friendId) {
+    public void removeFriend(@PathVariable long id, @PathVariable long friendId) throws UserNotFoundException {
         log.info(LogMessages.REMOVE_FRIEND_REQUEST.toString(), id, friendId);
         userService.removeFriend(id, friendId);
     }

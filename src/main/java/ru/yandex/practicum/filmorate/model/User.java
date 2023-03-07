@@ -1,13 +1,17 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import ru.yandex.practicum.filmorate.messages.AnnotationMessages;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -15,12 +19,13 @@ import java.util.Set;
 public class User extends Object {
     @Builder
     public User(Long id, String email, String login, String name, LocalDate birthday) {
-        this.id=id;
+        this.id = id;
         this.email = email;
         this.login = login;
         this.name = name;
         this.birthday = birthday;
     }
+
     private Long id;
 
     @Email(message = AnnotationMessages.INCORRECT_EMAIL)
@@ -42,6 +47,4 @@ public class User extends Object {
     public void removeFriend(Long id) {
         friends.remove(id);
     }
-
-
 }

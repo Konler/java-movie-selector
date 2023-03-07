@@ -2,18 +2,12 @@ package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exceptions.ObjectAlreadyExistException;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.messages.LogMessages;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,9 +23,8 @@ public class InMemoryUserStorage implements UserStorage {
         return id++;
     }
 
-
     @Override
-    public User add( User user) {
+    public User add(User user) {
 
         if (users.containsKey(user.getId())) {
             log.info(LogMessages.ALREADY_EXIST.toString(), user);
@@ -43,12 +36,11 @@ public class InMemoryUserStorage implements UserStorage {
         return user;
     }
 
-
     @Override
-    public User update( User user) {
+    public User update(User user) {
 
         validate(user.getId());
-       users.replace(user.getId(),user);
+        users.replace(user.getId(), user);
         return user;
     }
 
@@ -61,15 +53,16 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User findUserById(long id) {
-       validate(id);
+        validate(id);
         return users.get(id);
     }
 
     @Override
     public List<User> getAllUsers() {
         log.info(LogMessages.TOTAL.toString(), users.size());
-        return new ArrayList<>( users.values());
+        return new ArrayList<>(users.values());
     }
+
     @Override
     public void deleteUser(long id) {
         validate(id);
