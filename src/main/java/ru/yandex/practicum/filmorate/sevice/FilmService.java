@@ -26,19 +26,19 @@ public class FilmService {
     private final FilmStorage filmStorage;
 
     public void addLike(long filmId, long userId) {
-        Optional<Film>filmOptional = filmStorage.findFilmById(filmId);
+        Optional<Film> filmOptional = filmStorage.findFilmById(filmId);
 
-        Film film=filmOptional.orElseThrow(()->new ObjectNotFoundException("Фильм не найден"));
+        Film film = filmOptional.orElseThrow(() -> new ObjectNotFoundException("Фильм не найден"));
         userStorage.findUserById(userId);
         film.addLike(userId);
         log.info(LogMessages.LIKED_FILM.toString(), film);
     }
 
     public void removeLike(long filmId, long userId) {
-        Optional<Film>filmOptional = filmStorage.findFilmById(filmId);
-        Film film = filmOptional.orElseThrow(()->new ObjectNotFoundException("Фильм не найден"));
+        Optional<Film> filmOptional = filmStorage.findFilmById(filmId);
+        Film film = filmOptional.orElseThrow(() -> new ObjectNotFoundException("Фильм не найден"));
 
-         userStorage.findUserById(userId);
+        userStorage.findUserById(userId);
         film.removeLike(userId);
         log.info(LogMessages.UNLIKED_FILM.toString(), film);
     }
@@ -59,8 +59,8 @@ public class FilmService {
     }
 
     public Film findFilm(long id) {
-        Optional<Film>filmOptional = filmStorage.findFilmById(id);
-        Film film = filmOptional.orElseThrow(()->new ObjectNotFoundException("Фильм не найден"));
+        Optional<Film> filmOptional = filmStorage.findFilmById(id);
+        Film film = filmOptional.orElseThrow(() -> new ObjectNotFoundException("Фильм не найден"));
         return film;
     }
 
