@@ -1,7 +1,8 @@
 package ru.yandex.practicum.filmorate.sevice;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.messages.LogMessages;
 import ru.yandex.practicum.filmorate.model.User;
@@ -12,14 +13,10 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Builder
+@AllArgsConstructor
 public class UserService {
     private UserStorage userStorage;
-
-    @Autowired
-    public UserService(UserStorage storage) {
-
-        this.userStorage = storage;
-    }
 
     public void addFriend(Long userId, Long friendId) {
         User user = userStorage.findUserById(userId);

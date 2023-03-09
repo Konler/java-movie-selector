@@ -1,9 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import ru.yandex.practicum.filmorate.messages.AnnotationMessages;
 
 import javax.validation.constraints.Email;
@@ -16,6 +14,8 @@ import java.util.Set;
 
 @Data
 @EqualsAndHashCode
+@RequiredArgsConstructor
+@AllArgsConstructor
 @Builder
 public class User extends Object {
     private Long id;
