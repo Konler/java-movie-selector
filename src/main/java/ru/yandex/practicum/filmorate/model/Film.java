@@ -18,7 +18,6 @@ import java.util.Set;
 @EqualsAndHashCode
 @Builder
 public class Film {
-
     private Long id;
     @NotBlank(message = AnnotationMessages.EMPTY_NAME)
     private String name;

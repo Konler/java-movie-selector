@@ -16,18 +16,9 @@ import java.util.Set;
 
 @Data
 @EqualsAndHashCode
+@Builder
 public class User extends Object {
-    @Builder
-    public User(Long id, String email, String login, String name, LocalDate birthday) {
-        this.id = id;
-        this.email = email;
-        this.login = login;
-        this.name = name;
-        this.birthday = birthday;
-    }
-
     private Long id;
-
     @Email(message = AnnotationMessages.INCORRECT_EMAIL)
     @NotBlank(message = AnnotationMessages.EMPTY_EMAIL)
     private String email;

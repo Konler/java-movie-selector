@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.sevice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.messages.LogMessages;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -22,21 +21,21 @@ public class UserService {
         this.userStorage = storage;
     }
 
-    public void addFriend(Long userId, Long friendId) throws UserNotFoundException {
+    public void addFriend(Long userId, Long friendId) {
         User user = userStorage.findUserById(userId);
         User friend = userStorage.findUserById(friendId);
-        checkIfUserNull(user);
-        checkIfUserNull(friend);
+        checkIfFilmNull(user);
+        checkIfFilmNull(friend);
         user.addFriend(friendId);
         friend.addFriend(userId);
         log.info(LogMessages.FRIEND_ADDED.toString(), friend);
     }
 
-    public void removeFriend(Long userId, Long friendId) throws UserNotFoundException {
+    public void removeFriend(Long userId, Long friendId) {
         User user = userStorage.findUserById(userId);
         User friend = userStorage.findUserById(friendId);
-        checkIfUserNull(user);
-        checkIfUserNull(friend);
+        checkIfFilmNull(user);
+        checkIfFilmNull(friend);
         user.removeFriend(friendId);
         friend.removeFriend(userId);
         log.info(LogMessages.FRIEND_REMOVED.toString(), friend);
@@ -51,6 +50,12 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public void checkIfFilmNull(User user) {
+        if (user == null) {
+            log.warn(LogMessages.NULL_OBJECT.toString());
+        }
+    }
+
     public User findUser(long id) {
 
         return userStorage.findUserById(id);
@@ -61,14 +66,14 @@ public class UserService {
         log.info(LogMessages.USER_DELETED.toString(), id);
     }
 
-    public User addUser(User user) throws UserNotFoundException {
+    public User addUser(User user) {
         validate(user);
         userStorage.add(user);
         log.info(LogMessages.FILM_ADDED.toString(), user);
         return user;
     }
 
-    public void validate(User user) throws UserNotFoundException {
+    public void validate(User user) {
         checkIfUserNull(user);
         if (user.getName() == null || user.getName().isBlank()) {
             log.warn(LogMessages.EMPTY_USER_NAME.toString());
@@ -76,10 +81,9 @@ public class UserService {
         }
     }
 
-    public void checkIfUserNull(User user) throws UserNotFoundException {
-        if (user == null) {
+    public void checkIfUserNull(User object) {
+        if (object == null) {
             log.warn(LogMessages.NULL_OBJECT.toString());
-            throw new UserNotFoundException("Пользователь не найден");
         }
     }
 
@@ -87,7 +91,7 @@ public class UserService {
         return userStorage.getAllUsers();
     }
 
-    public User updateUser(User user) throws UserNotFoundException {
+    public User updateUser(User user) {
         validate(user);
         userStorage.update(user);
         log.info(LogMessages.USER_UPDATED.toString(), user);
