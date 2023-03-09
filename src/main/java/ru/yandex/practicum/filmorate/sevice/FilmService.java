@@ -27,7 +27,6 @@ public class FilmService {
 
     public void addLike(long filmId, long userId) {
         Optional<Film> filmOptional = filmStorage.findFilmById(filmId);
-
         Film film = filmOptional.orElseThrow(() -> new ObjectNotFoundException("Фильм не найден"));
         userStorage.findUserById(userId);
         film.addLike(userId);
@@ -37,7 +36,6 @@ public class FilmService {
     public void removeLike(long filmId, long userId) {
         Optional<Film> filmOptional = filmStorage.findFilmById(filmId);
         Film film = filmOptional.orElseThrow(() -> new ObjectNotFoundException("Фильм не найден"));
-
         userStorage.findUserById(userId);
         film.removeLike(userId);
         log.info(LogMessages.UNLIKED_FILM.toString(), film);

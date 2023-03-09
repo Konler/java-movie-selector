@@ -25,8 +25,6 @@ public class UserService {
         User user = userOptional.orElseThrow(() -> new ObjectNotFoundException("Пользователь не найден"));
         Optional<User> friendOptional = userStorage.findUserById(friendId);
         User friend = friendOptional.orElseThrow(() -> new ObjectNotFoundException("Пользователь не найден"));
-        checkIfFilmNull(user);
-        checkIfFilmNull(friend);
         user.addFriend(friendId);
         friend.addFriend(userId);
         log.info(LogMessages.FRIEND_ADDED.toString(), friend);
@@ -37,8 +35,6 @@ public class UserService {
         User user = userOptional.orElseThrow(() -> new ObjectNotFoundException("Пользователь не найден"));
         Optional<User> friendOptional = userStorage.findUserById(friendId);
         User friend = friendOptional.orElseThrow(() -> new ObjectNotFoundException("Пользователь не найден"));
-        checkIfFilmNull(user);
-        checkIfFilmNull(friend);
         user.removeFriend(friendId);
         friend.removeFriend(userId);
         log.info(LogMessages.FRIEND_REMOVED.toString(), friend);
@@ -47,17 +43,10 @@ public class UserService {
     public List<User> getFriends(Long userId) {
         Optional<User> userOptional = userStorage.findUserById(userId);
         User user = userOptional.orElseThrow(() -> new ObjectNotFoundException("Пользователь не найден"));
-        checkIfObjectNull(user);
         log.info(LogMessages.LIST_OF_FRIENDS.toString(), userId);
         return user.getFriends().stream()
                 .map(userStorage::findUserByHisId)
                 .collect(Collectors.toList());
-    }
-
-    public void checkIfFilmNull(User user) {
-        if (user == null) {
-            log.warn(LogMessages.NULL_OBJECT.toString());
-        }
     }
 
     public User findUser(long id) {
@@ -108,17 +97,10 @@ public class UserService {
         User user = userOptional.orElseThrow(() -> new ObjectNotFoundException("Пользователь не найден"));
         Optional<User> otherUserOpt = userStorage.findUserById(otherId);
         User otherUser = otherUserOpt.orElseThrow(() -> new ObjectNotFoundException("Пользователь не найден"));
-        checkIfObjectNull(user);
         log.info(LogMessages.LIST_OF_COMMON_FRIENDS.toString());
         return user.getFriends().stream()
                 .filter(otherUser.getFriends()::contains)
                 .map(userStorage::findUserByHisId)
                 .collect(Collectors.toList());
-    }
-
-    public void checkIfObjectNull(User user) {
-        if (user == null) {
-            log.warn(LogMessages.NULL_OBJECT.toString());
-        }
     }
 }
