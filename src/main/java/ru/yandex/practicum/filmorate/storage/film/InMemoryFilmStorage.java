@@ -9,10 +9,7 @@ import ru.yandex.practicum.filmorate.messages.LogMessages;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -51,9 +48,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film findFilmById(long id) {
+    public Optional<Film> findFilmById(long id) {
         validate(id);
-        return films.get(id);
+        return Optional.ofNullable(films.get(id));
     }
 
     @Override

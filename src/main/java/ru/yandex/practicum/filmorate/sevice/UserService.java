@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.messages.LogMessages;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,8 +21,10 @@ public class UserService {
     private UserStorage userStorage;
 
     public void addFriend(Long userId, Long friendId) {
-        User user = userStorage.findUserById(userId);
-        User friend = userStorage.findUserById(friendId);
+        Optional<User> userOptional = userStorage.findUserById(userId);
+        User user = userOptional.orElseThrow(()->new ObjectNotFoundException("Пользователь не найден"));
+        Optional<User> friendOptional = userStorage.findUserById(friendId);
+        User friend = friendOptional.orElseThrow(()->new ObjectNotFoundException("Пользователь не найден"));
         checkIfFilmNull(user);
         checkIfFilmNull(friend);
         user.addFriend(friendId);
@@ -29,8 +33,10 @@ public class UserService {
     }
 
     public void removeFriend(Long userId, Long friendId) {
-        User user = userStorage.findUserById(userId);
-        User friend = userStorage.findUserById(friendId);
+        Optional<User> userOptional = userStorage.findUserById(userId);
+        User user = userOptional.orElseThrow(()->new ObjectNotFoundException("Пользователь не найден"));
+        Optional<User> friendOptional = userStorage.findUserById(friendId);
+        User friend = friendOptional.orElseThrow(()->new ObjectNotFoundException("Пользователь не найден"));
         checkIfFilmNull(user);
         checkIfFilmNull(friend);
         user.removeFriend(friendId);
@@ -39,11 +45,12 @@ public class UserService {
     }
 
     public List<User> getFriends(Long userId) {
-        User user = userStorage.findUserById(userId);
-        checkIfObjectNull(user);
+        Optional<User> userOptional = userStorage.findUserById(userId);
+        User user = userOptional.orElseThrow(()->new ObjectNotFoundException("Пользователь не найден"));
+                checkIfObjectNull(user);
         log.info(LogMessages.LIST_OF_FRIENDS.toString(), userId);
         return user.getFriends().stream()
-                .map(userStorage::findUserById)
+                .map(userStorage::findUserByHisId)
                 .collect(Collectors.toList());
     }
 
@@ -54,8 +61,9 @@ public class UserService {
     }
 
     public User findUser(long id) {
-
-        return userStorage.findUserById(id);
+        Optional<User> userOptional = userStorage.findUserById(id);
+        User user = userOptional.orElseThrow(()->new ObjectNotFoundException("Пользователь не найден"));
+        return user;
     }
 
     public void deleteUserById(long id) {
@@ -96,14 +104,16 @@ public class UserService {
     }
 
     public List<User> getCommonFriends(Long id, Long otherId) {
-        User user = userStorage.findUserById(id);
-        User otherUser = userStorage.findUserById(otherId);
+        Optional<User> userOptional = userStorage.findUserById(id);
+        User user = userOptional.orElseThrow(()->new ObjectNotFoundException("Пользователь не найден"));
+        Optional<User> otherUserOpt = userStorage.findUserById(otherId);
+        User otherUser = otherUserOpt.orElseThrow(()->new ObjectNotFoundException("Пользователь не найден"));
         checkIfObjectNull(user);
-        checkIfObjectNull(otherUser);
+       // checkIfObjectNull(otherUser);
         log.info(LogMessages.LIST_OF_COMMON_FRIENDS.toString());
         return user.getFriends().stream()
                 .filter(otherUser.getFriends()::contains)
-                .map(userStorage::findUserById)
+                .map(userStorage::findUserByHisId)
                 .collect(Collectors.toList());
     }
 

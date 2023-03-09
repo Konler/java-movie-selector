@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@EqualsAndHashCode
 @Builder
 public class Film {
     private Long id;
