@@ -1,0 +1,52 @@
+
+USER
+--
+user_id PK int FK 
+email varchar
+login UNIQUE varchar
+name  varchar
+birthday data
+
+
+FREINDS
+--
+freindship_id PK int
+user_id  int FK >- USER.user_id
+freind_id int FK >- USER.user_id
+status boolean
+
+
+FILMS
+--
+film_id PK int FK 
+name varchar
+description varchar
+release_date data
+duration int
+rating_id int FK >- RATINGS_MPA.rating_id
+
+
+FILM_LIKES
+--
+like_id int PK
+film_id int FK >- FILMS.film_id
+user_id int FK >- USER.user_id
+
+
+RATINGS_MPA
+--
+rating_id int PK 
+name varchar
+
+
+FILM_GENRE
+--
+id int PK
+film_id int FK >- FILMS.film_id
+genre_id int FK >- GENRE.genre_id
+
+
+GENRE
+--
+genre_id int PK
+name varchar
