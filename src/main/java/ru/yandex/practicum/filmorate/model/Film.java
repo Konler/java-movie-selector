@@ -16,28 +16,33 @@ import java.util.Set;
 @Data
 @Builder
 public class Film {
+
     private Long id;
+
     @NotBlank(message = AnnotationMessages.EMPTY_NAME)
     private String name;
+
     @Size(max = 200, message = AnnotationMessages.LONG_DESCRIPTION)
     private String description;
+
     @NotNull
     private LocalDate releaseDate;
+
     @Positive(message = AnnotationMessages.INCORRECT_DURATION)
     private int duration;
+
     @JsonIgnore
-    private final Set<Long> filmAudience = new HashSet<>();
+    private final Set<Long> likes = new HashSet<>();
 
-    public void addLike(Long id) {
-        filmAudience.add(id);
+    public void addLike(Long userId) {
+        likes.add(userId);
     }
 
-    public void removeLike(Long id) {
-        filmAudience.remove(id);
+    public void removeLike(Long userId) {
+        likes.remove(userId);
     }
 
-    public int getPopularFilmsList() {
-        return filmAudience.size();
+    public int getLikesAmount() {
+        return likes.size();
     }
-
 }

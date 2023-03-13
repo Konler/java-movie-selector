@@ -1,4 +1,5 @@
 package ru.yandex.practicum.filmorate.controllers;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,10 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class UserControllerTest {
@@ -24,7 +25,7 @@ class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void addUserWithIncorrectEmail() throws Exception {
+    void addUserWithIncorrectEmail() throws Exception {
         User user = User.builder()
                 .email("incorrect?.email.@")
                 .login("Name1234")
@@ -32,45 +33,45 @@ class UserControllerTest {
                 .birthday(LocalDate.of(1994, 6, 19))
                 .build();
         mockMvc.perform(
-                        post("/users")
-                                .content(objectMapper.writeValueAsString(user))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+                post("/users")
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
                 .andExpect(status().isInternalServerError());
     }
 
     @Test
-    public void addUserWithEmptyEmail() throws Exception {
+    void addUserWithEmptyEmail() throws Exception {
         User user = User.builder()
                 .login("Name1234")
                 .name("Name")
                 .birthday(LocalDate.of(1994, 6, 19))
                 .build();
         mockMvc.perform(
-                        post("/users")
-                                .content(objectMapper.writeValueAsString(user))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+                post("/users")
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
                 .andExpect(status().isInternalServerError());
     }
 
     @Test
-    public void addUserWithEmptyLogin() throws Exception {
+    void addUserWithEmptyLogin() throws Exception {
         User user = User.builder()
                 .email("name@email.com")
                 .name("Name")
                 .birthday(LocalDate.of(1994, 6, 19))
                 .build();
         mockMvc.perform(
-                        post("/users")
-                                .content(objectMapper.writeValueAsString(user))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+                post("/users")
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
                 .andExpect(status().isInternalServerError());
     }
 
     @Test
-    public void addUserWithIncorrectBirthday() throws Exception {
+    void addUserWithIncorrectBirthday() throws Exception {
         User user = User.builder()
                 .email("name@email.com")
                 .login("Name1234")
@@ -78,15 +79,15 @@ class UserControllerTest {
                 .birthday(LocalDate.of(2100, 6, 19))
                 .build();
         mockMvc.perform(
-                        post("/users")
-                                .content(objectMapper.writeValueAsString(user))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+                post("/users")
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
                 .andExpect(status().isInternalServerError());
     }
 
     @Test
-    public void addUserWithCorrectData() throws Exception {
+    void addUserWithCorrectData() throws Exception {
         User user = User.builder()
                 .id(100L)
                 .email("name@email.com")
@@ -95,17 +96,17 @@ class UserControllerTest {
                 .birthday(LocalDate.of(1994, 6, 19))
                 .build();
         mockMvc.perform(
-                        post("/users")
-                                .content(objectMapper.writeValueAsString(user))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+                post("/users")
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
                 .andExpect(status().isOk());
         mockMvc.perform(get("/users")).andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void addAndUpdateUserWithCorrectData() throws Exception {
+    void addAndUpdateUserWithCorrectData() throws Exception {
         User user = User.builder()
                 .id(1L)
                 .email("name@email.com")
@@ -114,10 +115,10 @@ class UserControllerTest {
                 .birthday(LocalDate.of(1994, 6, 19))
                 .build();
         mockMvc.perform(
-                        post("/users")
-                                .content(objectMapper.writeValueAsString(user))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+                post("/users")
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
                 .andExpect(status().isOk());
         User user2 = User.builder()
                 .id(1L)
@@ -127,7 +128,7 @@ class UserControllerTest {
                 .birthday(LocalDate.of(1994, 6, 20))
                 .build();
         mockMvc.perform(put("/users").content(objectMapper.writeValueAsString(user2))
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+                .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk());
         mockMvc.perform(get("/users")).andDo(print())
                 .andExpect(status().isOk());

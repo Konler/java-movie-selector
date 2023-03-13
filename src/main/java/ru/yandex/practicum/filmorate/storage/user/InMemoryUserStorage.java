@@ -35,28 +35,20 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User update(User user) {
-
-        validate(user.getId());
+        checkIfExist(user.getId());
         users.replace(user.getId(), user);
         return user;
     }
 
-    public void validate(long id) throws ValidationException {
-        if (!users.containsKey(id)) {
-            log.info(LogMessages.OBJECT_NOT_FOUND.toString(), id);
-            throw new ObjectNotFoundException(LogMessages.OBJECT_NOT_FOUND.toString());
-        }
-    }
-
     @Override
     public Optional<User> findUserById(long id) {
-        validate(id);
+        checkIfExist(id);
         return Optional.ofNullable(users.get(id));
     }
 
     @Override
     public User findUserByHisId(long id) {
-        validate(id);
+        checkIfExist(id);
         return users.get(id);
     }
 
@@ -68,8 +60,16 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public void deleteUser(long id) {
-        validate(id);
+        checkIfExist(id);
         User user = users.get(id);
         users.remove(user.getId());
+    }
+
+    @Override
+    public void checkIfExist(long id) throws ValidationException {
+        if (!users.containsKey(id)) {
+            log.info(LogMessages.OBJECT_NOT_FOUND.toString(), id);
+            throw new ObjectNotFoundException(LogMessages.OBJECT_NOT_FOUND.toString());
+        }
     }
 }

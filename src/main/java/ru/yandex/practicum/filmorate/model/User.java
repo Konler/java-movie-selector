@@ -16,20 +16,25 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@RequiredArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Builder
-public class User extends Object {
+public class User {
     private Long id;
+
     @Email(message = AnnotationMessages.INCORRECT_EMAIL)
     @NotBlank(message = AnnotationMessages.EMPTY_EMAIL)
     private String email;
+
     @NotBlank(message = AnnotationMessages.EMPTY_LOGIN)
     @Pattern(regexp = "\\S+", message = AnnotationMessages.INCORRECT_LOGIN)
     private String login;
+
     private String name;
+
     @PastOrPresent(message = AnnotationMessages.INCORRECT_BIRTH_DATE)
     private LocalDate birthday;
+
     @JsonIgnore
     private Set<Long> friends = new HashSet<>();
 

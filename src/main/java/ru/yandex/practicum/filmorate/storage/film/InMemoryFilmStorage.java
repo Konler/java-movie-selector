@@ -8,14 +8,13 @@ import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.messages.LogMessages;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> films = new HashMap<>();
-    private static final LocalDate BIRTH_DATE_OF_CINEMA = LocalDate.of(1895, 12, 28);
     private Long id = 1L;
 
     private long generateId() {
@@ -35,12 +34,13 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film update(Film film) throws ValidationException {
-        validate(film.getId());
+        checkIfExist(film.getId());
         films.replace(film.getId(), film);
         return film;
     }
 
-    public void validate(Long id) {
+    @Override
+    public void checkIfExist(Long id) {
         if (!films.containsKey(id)) {
             log.info(LogMessages.OBJECT_NOT_FOUND.toString(), id);
             throw new ObjectNotFoundException(LogMessages.OBJECT_NOT_FOUND.toString());
@@ -49,7 +49,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Optional<Film> findFilmById(long id) {
-        validate(id);
+        checkIfExist(id);
         return Optional.ofNullable(films.get(id));
     }
 
@@ -61,8 +61,16 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public void deleteFilm(long id) {
-        validate(id);
+        checkIfExist(id);
         Film film = films.get(id);
         films.remove(film.getId());
+    }
+
+    @Override
+    public List<Film> getSortedByWithLimit(Comparator<Film> comparator, int count) {
+        return films.values().stream()
+                .sorted(comparator)
+                .limit(count)
+                .collect(Collectors.toList());
     }
 }
