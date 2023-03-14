@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,7 +12,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,10 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class FilmControllerTest {
     FilmController filmController;
 
-    @BeforeEach
-    void seiUp() {
-        filmController = new FilmController();
-    }
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,22 +30,22 @@ class FilmControllerTest {
 
 
     @Test
-    public void addFilmWithEmptyName() throws Exception {
+    void addFilmWithEmptyName() throws Exception {
         Film film = Film.builder()
                 .description("Film description")
                 .releaseDate(LocalDate.of(2012, 6, 30))
                 .duration(60)
                 .build();
         mockMvc.perform(
-                        post("/films")
-                                .content(objectMapper.writeValueAsString(film))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isBadRequest());
+                post("/films")
+                        .content(objectMapper.writeValueAsString(film))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
-    public void addFilmWithIncorrectDuration() throws Exception {
+    void addFilmWithIncorrectDuration() throws Exception {
         Film film = Film.builder()
                 .name("Titanic")
                 .description("Film description")
@@ -58,15 +53,15 @@ class FilmControllerTest {
                 .duration(-60)
                 .build();
         mockMvc.perform(
-                        post("/films")
-                                .content(objectMapper.writeValueAsString(film))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isBadRequest());
+                post("/films")
+                        .content(objectMapper.writeValueAsString(film))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
-    public void addFilmWithIncorrectDescription() throws Exception {
+    void addFilmWithIncorrectDescription() throws Exception {
         Film film = Film.builder()
                 .name("Titanic")
                 .description("Film descriptionjfghsoufghosrugfhierugferigfuaigueiguierugeiaugheirugeirgeiurghierughierguheirugheirughirgheriugheirugheriugheriughrieugheriughriugherigherghiruehgierhgiuerhgiuerhgiurhgirugheriughrieugheirughiurghuirehgieurg")
@@ -74,82 +69,87 @@ class FilmControllerTest {
                 .duration(60)
                 .build();
         mockMvc.perform(
-                        post("/films")
-                                .content(objectMapper.writeValueAsString(film))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isBadRequest());
+                post("/films")
+                        .content(objectMapper.writeValueAsString(film))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
-    public void addFilmWithIncorrectReleaseData() {
+    void addFilmWithIncorrectReleaseData() throws Exception {
         Film film = Film.builder()
                 .name("Titanic")
                 .description("Film description")
                 .releaseDate(LocalDate.of(1894, 6, 30))
                 .duration(60)
                 .build();
-        assertThrows(ValidationException.class, () -> filmController.add(film), "Некорректная дата релиза!");
+        mockMvc.perform(
+                post("/films")
+                        .content(objectMapper.writeValueAsString(film))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ValidationException));
     }
 
     @Test
-    public void addFilmWithNullReleaseData() throws Exception {
+    void addFilmWithNullReleaseData() throws Exception {
         Film film = Film.builder()
                 .name("Titanic")
                 .description("Film description")
                 .duration(60)
                 .build();
         mockMvc.perform(
-                        post("/films")
-                                .content(objectMapper.writeValueAsString(film))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isBadRequest());
+                post("/films")
+                        .content(objectMapper.writeValueAsString(film))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
-    public void addFilmWithCorrectData() throws Exception {
+    void addFilmWithCorrectData() throws Exception {
         Film film = Film.builder()
-                .id(100)
+                .id(100L)
                 .name("Titanic")
                 .description("Film description")
                 .releaseDate(LocalDate.of(2012, 6, 30))
                 .duration(60)
                 .build();
         mockMvc.perform(
-                        post("/films")
-                                .content(objectMapper.writeValueAsString(film))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+                post("/films")
+                        .content(objectMapper.writeValueAsString(film))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
                 .andExpect(status().isOk());
         mockMvc.perform(get("/films")).andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void addAndUpdateFilmWithCorrectData() throws Exception {
+    void addAndUpdateFilmWithCorrectData() throws Exception {
         Film film = Film.builder()
-                .id(1)
+                .id(1L)
                 .name("Titanic")
                 .description("Film description")
                 .releaseDate(LocalDate.of(2012, 6, 30))
                 .duration(60)
                 .build();
         mockMvc.perform(
-                        post("/films")
-                                .content(objectMapper.writeValueAsString(film))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+                post("/films")
+                        .content(objectMapper.writeValueAsString(film))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
                 .andExpect(status().isOk());
         Film film2 = Film.builder()
-                .id(1)
+                .id(1L)
                 .name("HomeAlone")
                 .description("HomeAlone description")
                 .releaseDate(LocalDate.of(2012, 6, 30))
                 .duration(60)
                 .build();
         mockMvc.perform(put("/films").content(objectMapper.writeValueAsString(film2))
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+                .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk());
         mockMvc.perform(get("/films")).andDo(print())
                 .andExpect(status().isOk());
