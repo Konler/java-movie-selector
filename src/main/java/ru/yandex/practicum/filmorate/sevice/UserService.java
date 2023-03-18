@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.messages.LogMessages;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -49,7 +48,7 @@ public class UserService {
         return getUserIfExist(id);
     }
 
-    public void deleteUserById(long id) {
+    public void deleteUserById(long id)  {
         userStorage.checkIfExist(id);
         userStorage.deleteUser(id);
         log.info(LogMessages.USER_DELETED.toString(), id);

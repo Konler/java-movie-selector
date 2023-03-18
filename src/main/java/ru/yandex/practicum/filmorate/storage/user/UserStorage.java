@@ -9,15 +9,15 @@ public interface UserStorage {
 
     User add(User object);
 
-    User update(User object);
+    User update(User object) ;
 
-    Optional<User> findUserById(long id);
+    Optional<User> findUserById(long id) ;
 
-    User findUserByHisId(long id);
+    User findUserByHisId(long id) ;
 
     List<User> getAllUsers();
 
-    void deleteUser(long id);
+    void deleteUser(long id) ;
 
     void checkIfExist(long id);
 }
