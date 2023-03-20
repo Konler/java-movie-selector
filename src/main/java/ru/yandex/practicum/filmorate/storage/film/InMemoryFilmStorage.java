@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ObjectAlreadyExistException;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
@@ -10,6 +11,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
 import java.util.stream.Collectors;
+@ConditionalOnProperty(name = "app.storage.type", havingValue = "memory")
 @Slf4j
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
@@ -38,7 +40,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
-    @Override
+
     public void checkIfExist(Long id) {
         if (!films.containsKey(id)) {
             log.info(LogMessages.OBJECT_NOT_FOUND.toString(), id);
@@ -65,7 +67,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         films.remove(film.getId());
     }
 
-    @Override
+
     public List<Film> getSortedByWithLimit(Comparator<Film> comparator, int count) {
         return films.values().stream()
                 .sorted(comparator)

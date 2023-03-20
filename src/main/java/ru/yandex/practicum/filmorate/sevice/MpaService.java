@@ -1,31 +1,22 @@
 package ru.yandex.practicum.filmorate.sevice;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.MpaStorage;
+import ru.yandex.practicum.filmorate.storage.MpaDbStorage;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class MpaService {
+    private final MpaDbStorage mpaStorage;
 
-    private MpaStorage mpaStorage;
-
-    @Autowired
-    public MpaService(MpaStorage mpaStorage) {
-        this.mpaStorage = mpaStorage;
+    public List<Mpa> getAllMpas() {
+        return mpaStorage.getAllMpas();
     }
 
-    public Collection<Mpa> getAllMpa() {
-        return mpaStorage.getAllMpa().stream()
-                .sorted(Comparator.comparing(Mpa::getId))
-                .collect(Collectors.toList());
-    }
-
-    public Mpa getMpaById(Integer id) {
+    public Mpa getMpaById(long id) {
         return mpaStorage.getMpaById(id);
     }
 }

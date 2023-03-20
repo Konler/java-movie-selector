@@ -1,124 +1,113 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
-
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
+import ru.yandex.practicum.filmorate.mappers.UserMapper;
+import ru.yandex.practicum.filmorate.messages.LogMessages;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@Component("userDbStorage")
-public class UserDbStorage implements UserStorage{
-
+@Repository
+@RequiredArgsConstructor
+//@Qualifier("userDbStorage")
+@ConditionalOnProperty(name = "app.storage.type", havingValue = "db")
+public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public UserDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    @Override
+    public User add(User object) {
+        String sql = "INSERT INTO user_data (email, login, name, birthday) \n" +
+                "VALUES (?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement psst = connection.prepareStatement(sql, new String[]{"user_id"});
+            psst.setString(1, object.getEmail());
+            psst.setString(2, object.getLogin());
+            psst.setString(3, object.getName());
+            psst.setDate(4, Date.valueOf(object.getBirthday()));
+            return psst;
+        }, keyHolder);
+        object.setId(keyHolder.getKey().longValue());
+        return object;
+    }
+
+    @Override
+    public User update(User object) {
+        String sql = "UPDATE user_data SET email = ?, login = ?, name = ?, birthday = ? WHERE user_id = ?";
+        int userData = jdbcTemplate.update(sql, object.getEmail(), object.getLogin(), object.getName(),
+                object.getBirthday(), object.getId());
+        if (userData == 0) {
+            log.warn(LogMessages.OBJECT_NOT_FOUND.toString());
+            throw new ObjectNotFoundException(LogMessages.OBJECT_NOT_FOUND.toString());
+        }
+        return object;
+    }
+
+    @Override
+    public Optional<User> findUserById(long id) {
+        String sql = "SELECT * \n" +
+                "FROM user_data\n" +
+                "WHERE user_data.user_id = ?;";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new UserMapper(), id));
+        } catch (EmptyResultDataAccessException ex) {
+            log.warn(LogMessages.OBJECT_NOT_FOUND.toString(), id);
+            throw new ObjectNotFoundException(LogMessages.OBJECT_NOT_FOUND.toString());
+        }
+    }
+
+    @Override
+    public void deleteUser(long id) {
+        String sql = "DELETE FROM friend \n" +
+                "WHERE user_id = ?\n" +
+                "AND friend_id = ? ";
+        jdbcTemplate.update(sql, id, id);
+    }
+
+    @Override
+    public User checkIfExist(long id) {
+        String sql = "SELECT * \n" +
+                "FROM user_data\n" +
+                "WHERE user_data.user_id = ?;";
+        try {
+            return jdbcTemplate.queryForObject(sql, new UserMapper(), id);
+        } catch (EmptyResultDataAccessException ex) {
+            log.warn(LogMessages.OBJECT_NOT_FOUND.toString(), id);
+            throw new ObjectNotFoundException(LogMessages.OBJECT_NOT_FOUND.toString());
+        }
     }
 
 
-// вернет list или один объект???
+    @Override
+    @Nullable
+    public User  findUserByHisId(long id) {
+        String sql = "SELECT * \n" +
+                "FROM user_data\n" +
+                "WHERE user_data.user_id = ?;";
+        try {
+            return jdbcTemplate.queryForObject(sql, new UserMapper(), id);
+        } catch (EmptyResultDataAccessException ex) {
+            log.warn(LogMessages.OBJECT_NOT_FOUND.toString(), id);
+            throw new ObjectNotFoundException(LogMessages.OBJECT_NOT_FOUND.toString());
+        }
+    }
+
     @Override
     public List<User> getAllUsers() {
-        String sql = "SELECT * FROM users";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new User(
-                rs.getLong("id"),
-                rs.getString("email"),
-                rs.getString("login"),
-                rs.getString("name"),
-                rs.getDate("birthday").toLocalDate(),
-                null)
-        );
+        String sql = "SELECT * FROM user_data;";
+        return jdbcTemplate.query(sql, new UserMapper());
     }
-
-    @Override
-    public void deleteUser(long id)  {
-        checkIfExist(id);
-        User user = InMemoryUserStorage.users.get(id);
-        InMemoryUserStorage.users.remove(user.getId());
-    }
-
-    @Override
-    public void checkIfExist(long id) {
-
-    }
-
-    @Override
-    public User add(User user) {
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("users")
-                .usingGeneratedKeyColumns("id");
-        user.setId(simpleJdbcInsert.executeAndReturnKey(user.toMap()).longValue());
-        log.info("Добавлен новый пользователь с ID={}", user.getId());
-        return user;
-    }
-
-    @Override
-    public User update(User user)  {
-        if (user.getId() == null) {
-            throw new ValidationException("Передан пустой аргумент!");
-        }
-        if (findUserById(user.getId()) != null) {
-            String sqlQuery = "UPDATE users SET " +
-                    "email = ?, login = ?, name = ?, birthday = ? " +
-                    "WHERE id = ?";
-            jdbcTemplate.update(sqlQuery,
-                    user.getEmail(),
-                    user.getLogin(),
-                    user.getName(),
-                    user.getBirthday(),
-                    user.getId());
-            log.info("Пользователь с ID={} успешно обновлен", user.getId());
-            return user;
-        } else {
-            throw new UserNotFoundException("Пользователь с ID=" + user.getId() + " не найден!");
-        }
-    }
-
-    @Override
-    public Optional<User> findUserById(long userId)  {
-        Optional<User> user;
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM users WHERE id = ?", userId);
-        if (userRows.first()) {
-            user = Optional.of(new User(
-                    userRows.getLong("id"),
-                    userRows.getString("email"),
-                    userRows.getString("login"),
-                    userRows.getString("name"),
-                    userRows.getDate("birthday").toLocalDate(),
-                    null));
-        } else {
-            throw new UserNotFoundException("Пользователь с ID=" + userId + " не найден!");
-        }
-        return user;
-    }
-
-    @Override
-    public User findUserByHisId(long id)  {
-        User user;
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM users WHERE id = ?", id);
-        if (userRows.first()) {
-            user = new User(
-                    userRows.getLong("id"),
-                    userRows.getString("email"),
-                    userRows.getString("login"),
-                    userRows.getString("name"),
-                    userRows.getDate("birthday").toLocalDate(),
-                    null);
-        } else {
-            throw new UserNotFoundException("Пользователь с ID=" + id + " не найден!");
-        }
-        return user;
-    }
-
-
 }

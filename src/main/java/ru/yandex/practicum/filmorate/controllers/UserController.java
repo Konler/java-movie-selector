@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User userRenewal(@Valid @RequestBody User user) throws ValidationException {
+    public User UpdateUser(@Valid @RequestBody User user) throws ValidationException {
         log.info(LogMessages.RENEWAL_USER_REQUEST.toString(), user);
         userService.updateUser(user);
         return user;
@@ -73,7 +73,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> getCommonFriends(@PathVariable long id, @PathVariable long otherId)  {
+    public List<User> getCommonFriends(@PathVariable long id, @PathVariable long otherId) {
         log.info(LogMessages.GET_COMMON_FRIENDS_REQUEST.toString());
         return userService.getCommonFriends(id, otherId);
     }

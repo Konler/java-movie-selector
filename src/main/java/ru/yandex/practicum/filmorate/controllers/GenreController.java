@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,27 +11,20 @@ import ru.yandex.practicum.filmorate.sevice.GenreService;
 
 import java.util.Collection;
 
+@Slf4j
 @RestController
 @RequestMapping("/genres")
-@Slf4j
+@RequiredArgsConstructor
 public class GenreController {
-
-    private GenreService genreService;
-
-    @Autowired
-    public GenreController(GenreService genreService) {
-        this.genreService = genreService;
-    }
+    private final GenreService service;
 
     @GetMapping
-    public Collection<Genre> getGenres() {
-        log.info("Получен GET-запрос к эндпоинту: '/genres' на получение всех жанров");
-        return genreService.getGenres();
+    public Collection<Genre> getAllGenres() {
+        return service.getAllGenres();
     }
 
     @GetMapping("/{id}")
-    public Genre getGenreById(@PathVariable Integer id) {
-        log.info("Получен GET-запрос к эндпоинту: '/genres' на получение жанра с ID={}", id);
-        return genreService.getGenreById(id);
+    public Genre getGenreById(@PathVariable long id) {
+        return service.getGenreById(id);
     }
 }

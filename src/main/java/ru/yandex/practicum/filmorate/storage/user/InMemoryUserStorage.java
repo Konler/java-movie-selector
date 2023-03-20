@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ObjectAlreadyExistException;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
@@ -12,6 +13,7 @@ import java.util.*;
 
 @Slf4j
 @Component
+@ConditionalOnProperty(name = "app.storage.type", havingValue = "memory")
 public class InMemoryUserStorage implements UserStorage {
     private Long id = 1L;
     static final Map<Long, User> users = new HashMap<>();
@@ -65,11 +67,14 @@ public class InMemoryUserStorage implements UserStorage {
         users.remove(user.getId());
     }
 
-    @Override
-    public void checkIfExist(long id) throws ValidationException {
+
+    public User checkIfExist(long id) throws ValidationException {
         if (!users.containsKey(id)) {
             log.info(LogMessages.OBJECT_NOT_FOUND.toString(), id);
             throw new ObjectNotFoundException(LogMessages.OBJECT_NOT_FOUND.toString());
         }
+        return null;
     }
+
+
 }
