@@ -17,12 +17,11 @@ import java.util.Set;
 
 @Data
 @EqualsAndHashCode
-
 public class Film {
     private long id;
-   @Builder
+    @Builder
     public Film(long id, String name, String description, LocalDate releaseDate, int duration, long rate, Mpa mpa) {
-        this.id=id;
+        this.id = id;
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
@@ -44,6 +43,10 @@ public class Film {
     @NotNull
     private Mpa mpa;
     private LinkedHashSet<Genre> genres = new LinkedHashSet<>();
+
+    public HashSet<Genre> getGenres() {
+        return genres;
+    }
     private Long rate = 0L;
 
     public void addLike(Long id) {

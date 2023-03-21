@@ -21,7 +21,6 @@ mpa_id long
 CREATE TABLE IF NOT EXISTS friend(
 user_id int,
 friend_id int,
-friendship_status boolean DEFAULT false,
 PRIMARY KEY (user_id, friend_id)
 );
 

@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.messages.LogMessages;
@@ -10,18 +10,14 @@ import ru.yandex.practicum.filmorate.sevice.FilmService;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/films")
 public class FilmController {
     private final FilmService filmService;
-    @Autowired
-    public FilmController(FilmService filmService) {
 
-        this.filmService = filmService;
-    }
     @GetMapping
     public List<Film> getAllFilms() {
         log.info(LogMessages.GET_ALL_FILMS_REQUEST.toString());
@@ -29,9 +25,9 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Film> getFilmById(@PathVariable long id) {
+    public Film getFilmById(@PathVariable long id) {
         log.info(LogMessages.GET_FILM_BY_ID_REQUEST.toString(), id);
-        return filmService.findFilmById(id);
+        return filmService.findFilmById(id).get();
     }
 
     @DeleteMapping("/{id}")

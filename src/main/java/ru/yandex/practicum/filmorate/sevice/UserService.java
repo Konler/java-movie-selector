@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.messages.LogMessages;
-import ru.yandex.practicum.filmorate.model.Friend;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.FriendStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -19,17 +18,12 @@ import java.util.Optional;
 public class UserService {
     private FriendStorage friendStorage;
     private UserStorage userStorage;
+
     @Autowired
     public UserService(UserStorage userStorage, FriendStorage friendStorage) {
         this.userStorage = userStorage;
         this.friendStorage = friendStorage;
     }
-
-//    @Autowired
-//    public UserService(@Qualifier("userDbStorage")UserStorage userStorage, @Qualifier("friendDbStorage")FriendStorage friendStorage) {
-//        this.userStorage = userStorage;
-//        this.friendStorage = friendStorage;
-//    }
 
     private void validateUserName(@NotNull User user) {
         if (user.getName() == null || user.getName().isBlank()) {
@@ -37,6 +31,7 @@ public class UserService {
             user.setName(user.getLogin());
         }
     }
+
     private User getUserIfExist(Long userId) {
         Optional<User> userOptional = userStorage.findUserById(userId);
         return userOptional.orElseThrow();
@@ -45,25 +40,23 @@ public class UserService {
     public void addFriend(Long userId, Long otherUserId) {
         User user = userStorage.findUserByHisId(userId);
         User otherUser = userStorage.findUserByHisId(otherUserId);
-
         User friend = getFriend(userId, otherUserId);
         if (friend != null) {
 
-            Friend unconfirmedFriend = user.getFriends().stream()
+            User unconfirmedFriend = user.getFriends().stream()
                     .filter(f -> f.getId() == otherUserId)
                     .findFirst()
                     .orElse(null);
-            Friend otherUnconfirmedFriend = user.getFriends().stream()
-                    .filter(f -> f.getId()== otherUserId)
+            User otherUnconfirmedFriend = user.getFriends().stream()
+                    .filter(f -> f.getId() == otherUserId)
                     .findFirst()
                     .orElse(null);
-            if(unconfirmedFriend == null || otherUnconfirmedFriend == null) {
+            if (unconfirmedFriend == null || otherUnconfirmedFriend == null) {
                 log.warn(LogMessages.NULL_OBJECT.toString());
                 throw new ObjectNotFoundException("Неизвестный объект!");
             } else {
                 unconfirmedFriend.setFriendshipConfirm(true);
                 otherUnconfirmedFriend.setFriendshipConfirm(true);
-
             }
         } else {
             friendStorage.addFriend(userId, otherUserId);
@@ -80,7 +73,7 @@ public class UserService {
     }
 
     public List<User> getFriends(Long userId) {
-       User user = getUserIfExist(userId);
+        User user = getUserIfExist(userId);
         log.info(LogMessages.LIST_OF_FRIENDS.toString(), userId);
         return friendStorage.getFriends(userId);
     }
@@ -95,11 +88,12 @@ public class UserService {
     public User getFriend(Long id, Long friendId) {
         return getFriends(id).stream().filter(user -> user.getId() == friendId).findFirst().orElse(null);
     }
+
     public List<User> getAll() {
         return userStorage.getAllUsers();
     }
 
-    public User findUser(long  id){
+    public User findUser(long id) {
         userStorage.checkIfExist(id);
         return userStorage.findUserById(id).get();
     }
@@ -114,7 +108,7 @@ public class UserService {
         return user;
     }
 
-    public User updateUser(User user){
+    public User updateUser(User user) {
         validateUserName(user);
         userStorage.update(user);
         return user;

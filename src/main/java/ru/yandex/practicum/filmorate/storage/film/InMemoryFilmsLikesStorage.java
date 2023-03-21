@@ -21,7 +21,7 @@ public class InMemoryFilmsLikesStorage implements FilmLikesStorage {
     private UserStorage userStorage;
 
     @Autowired
-    public InMemoryFilmsLikesStorage (FilmStorage filmStoragestorage, UserStorage userStorage) {
+    public InMemoryFilmsLikesStorage(FilmStorage filmStoragestorage, UserStorage userStorage) {
         this.filmStoragestorage = filmStoragestorage;
         this.userStorage = userStorage;
     }

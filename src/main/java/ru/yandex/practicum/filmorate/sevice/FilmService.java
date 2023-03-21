@@ -25,23 +25,11 @@ public class FilmService {
     private final FilmLikesStorage filmLikesStorage;
 
     @Autowired
-    public FilmService( FilmStorage filmStorage,UserStorage userStorage, FilmLikesStorage filmAudienceStorage) {
-        log.info(filmStorage.getClass().toString());
+    public FilmService(FilmStorage filmStorage, UserStorage userStorage, FilmLikesStorage filmAudienceStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
         this.filmLikesStorage = filmAudienceStorage;
     }
-
-
-
-//    @Autowired
-//    public FilmService(@Qualifier("filmDbstorage") FilmStorage filmStorage,@Qualifier("userDbStorage") UserStorage userStorage,@Qualifier("filmLikesStorage") FilmLikesStorage filmAudienceStorage) {
-//        log.info(filmStorage.getClass().toString());
-//        this.filmStorage = filmStorage;
-//        this.userStorage = userStorage;
-//        this.filmLikesStorage = filmAudienceStorage;
-//    }
-
 
     private void validateFilmReleaseDate(Film film) throws ValidationException {
         if (film.getReleaseDate().isBefore(BIRTH_DATE_OF_CINEMA)) {
@@ -66,10 +54,12 @@ public class FilmService {
         filmLikesStorage.removeLike(filmId, userId);
         log.info(LogMessages.UNLIKED_FILM.toString(), film);
     }
+
     public List<Film> getPopularFilmsList(int count) {
         log.info(LogMessages.POPULAR_TOTAL.toString(), count);
         return filmLikesStorage.getPopularFilmsList(count);
     }
+
     public void deleteFilmById(long id) {
         filmStorage.deleteFilm(id);
         log.info(LogMessages.FILM_DELETED.toString(), id);
@@ -92,10 +82,12 @@ public class FilmService {
     public List<Film> getAll() {
         return filmStorage.getAllFilms();
     }
+
     private Film getFilmIfExist(Long filmId) {
         Optional<Film> userOptional = filmStorage.findFilmById(filmId);
         return userOptional.orElseThrow();
     }
+
     public Optional<Film> findFilmById(long id) {
         return filmStorage.findFilmById(id);
     }

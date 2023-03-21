@@ -11,11 +11,12 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
 @ConditionalOnProperty(name = "app.storage.type", havingValue = "memory")
 @Slf4j
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
-   static final Map<Long, Film> films = new HashMap<>();
+    static final Map<Long, Film> films = new HashMap<>();
     private Long id = 1L;
 
     private long generateId() {

@@ -7,12 +7,12 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode
 @Builder
-public class Genre  {
+public class Genre {
     private Long id;
     private String name;
 
     public Genre(long id, String name) {
-        this.id=id;
+        this.id = id;
         this.name = name;
     }
 }

@@ -21,13 +21,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 
-;
-
 @Slf4j
 @Repository
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "app.storage.type", havingValue = "db")
-//@Qualifier("filmDbstorage")
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
 
@@ -52,25 +49,25 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film update(Film object) {
+    public Film update(Film film) {
         String sql = "UPDATE film_data \n" +
                 "SET name = ?, description = ?, release_date = ?, \n" +
                 "duration = ?, rate = ?, mpa_id = ? \n" +
                 "WHERE film_id = ?";
         int filmData = jdbcTemplate.update(sql,
-                object.getName(),
-                object.getDescription(),
-                object.getReleaseDate(),
-                object.getDuration(),
-                object.getRate(),
-                object.getMpa().getId(),
-                object.getId());
+                film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration(),
+                film.getRate(),
+                film.getMpa().getId(),
+                film.getId());
         if (filmData == 0) {
             log.warn(LogMessages.OBJECT_NOT_FOUND.toString());
             throw new ObjectNotFoundException(LogMessages.OBJECT_NOT_FOUND.toString());
         }
-        saveGenresToFilm(object);
-        return object;
+        saveGenresToFilm(film);
+        return film;
     }
 
     @Override
@@ -138,7 +135,6 @@ public class FilmDbStorage implements FilmStorage {
                         ps.setLong(1, filmId);
                         ps.setLong(2, genreList.get(i).getId());
                     }
-
                     @Override
                     public int getBatchSize() {
                         return genreList.size();
