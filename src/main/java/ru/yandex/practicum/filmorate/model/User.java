@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -13,36 +12,42 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.Set;
+
 
 @Data
-@AllArgsConstructor
 @RequiredArgsConstructor
-@Builder
 public class User {
     private Long id;
+    @Builder
+    public User(Long id, String email, String login, String name, LocalDate birthday) {
+        this.id = id;
+        this.email = email;
+        this.login = login;
+        this.name = name;
+        this.birthday = birthday;
+    }
 
     @Email(message = AnnotationMessages.INCORRECT_EMAIL)
     @NotBlank(message = AnnotationMessages.EMPTY_EMAIL)
     private String email;
-
     @NotBlank(message = AnnotationMessages.EMPTY_LOGIN)
     @Pattern(regexp = "\\S+", message = AnnotationMessages.INCORRECT_LOGIN)
     private String login;
-
     private String name;
-
     @PastOrPresent(message = AnnotationMessages.INCORRECT_BIRTH_DATE)
     private LocalDate birthday;
-
     @JsonIgnore
-    private Set<Long> friends = new HashSet<>();
+    private final HashSet<User> friends = new HashSet<>();
+
+    private boolean isFriendshipConfirm =false;
 
     public void addFriend(Long id) {
-        friends.add(id);
+        User friend = new User();
+        friend.setId(id);
+        friends.add(friend);
     }
 
     public void removeFriend(Long id) {
-        friends.remove(id);
+        friends.removeIf(friend -> friend.getId() == id);
     }
 }

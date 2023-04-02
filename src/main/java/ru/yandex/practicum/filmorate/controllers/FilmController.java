@@ -27,7 +27,7 @@ public class FilmController {
     @GetMapping("/{id}")
     public Film getFilmById(@PathVariable long id) {
         log.info(LogMessages.GET_FILM_BY_ID_REQUEST.toString(), id);
-        return filmService.findFilm(id);
+        return filmService.findFilmById(id).get();
     }
 
     @DeleteMapping("/{id}")
@@ -44,7 +44,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film filmRenewal(@Valid @RequestBody Film film) throws ValidationException {
+    public Film updateFilm(@Valid @RequestBody Film film) throws ValidationException {
         log.info(LogMessages.RENEWAL_FILM_REQUEST.toString(), film);
         filmService.updateFilm(film);
         return film;
