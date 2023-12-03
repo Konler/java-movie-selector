@@ -22,7 +22,6 @@ import java.util.Optional;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-//@Qualifier("userDbStorage")
 @ConditionalOnProperty(name = "app.storage.type", havingValue = "db")
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;

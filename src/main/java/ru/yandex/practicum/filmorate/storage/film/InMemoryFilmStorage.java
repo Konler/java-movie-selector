@@ -67,12 +67,4 @@ public class InMemoryFilmStorage implements FilmStorage {
         Film film = films.get(id);
         films.remove(film.getId());
     }
-
-
-    public List<Film> getSortedByWithLimit(Comparator<Film> comparator, int count) {
-        return films.values().stream()
-                .sorted(comparator)
-                .limit(count)
-                .collect(Collectors.toList());
-    }
 }

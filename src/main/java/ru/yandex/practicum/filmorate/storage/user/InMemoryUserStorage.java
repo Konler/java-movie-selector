@@ -16,7 +16,7 @@ import java.util.*;
 @ConditionalOnProperty(name = "app.storage.type", havingValue = "memory")
 public class InMemoryUserStorage implements UserStorage {
     private Long id = 1L;
-    static final Map<Long, User> users = new HashMap<>();
+    private static final Map<Long, User> users = new HashMap<>();
 
     private Long generateId() {
         return id++;
@@ -75,6 +75,4 @@ public class InMemoryUserStorage implements UserStorage {
         }
         return null;
     }
-
-
 }
